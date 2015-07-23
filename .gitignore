@@ -5,10 +5,11 @@ lame-3.99.5/
 x264/
 
 *~
-*.o
-*.so
 *.a
 *.la
+*.log
+*.o
+*.so
 
 # archives
 *.tgz
