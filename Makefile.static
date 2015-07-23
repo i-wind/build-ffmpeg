@@ -33,32 +33,32 @@ build:
 lame:
 	cd $(LAME_DIR); \
 	echo -n "$(CURRENT_TIME) building $@ ... " >> $(LOG_FILE); \
-	./configure --prefix=$(C_USR_DIR) --enable-shared --enable-static >> ${LOG_FILE} 2>&1; \
+	./configure --prefix=$(C_USR_DIR) --disable-shared --enable-static >> ${LOG_FILE} 2>&1; \
 	$(MAKE) >> ${LOG_FILE} 2>&1 && $(MAKE) install;
 
 faac:
 	cd $(FAAC_DIR); \
 	echo -n "$(CURRENT_TIME) building $@ ... " >> $(LOG_FILE); \
-	./configure --prefix=$(C_USR_DIR) --enable-shared --enable-static >> ${LOG_FILE} 2>&1; \
+	./configure --prefix=$(C_USR_DIR) --disable-shared --enable-static >> ${LOG_FILE} 2>&1; \
 	$(MAKE) >> ${LOG_FILE} 2>&1 && $(MAKE) install;
 
 x264:
 	cd $@; \
 	echo -n "$(CURRENT_TIME) building $@ ... " >> $(LOG_FILE); \
-	./configure --prefix=$(C_USR_DIR) --extra-cflags="-I$(C_USR_DIR)/include" --extra-ldflags="-L$(C_USR_DIR)/lib" --enable-shared --enable-static --disable-lavf --disable-ffms --disable-opencl >> ${LOG_FILE} 2>&1; \
+	./configure --prefix=$(C_USR_DIR) --extra-cflags="-I$(C_USR_DIR)/include" --extra-ldflags="-L$(C_USR_DIR)/lib" --enable-static --disable-lavf --disable-ffms --disable-opencl >> ${LOG_FILE} 2>&1; \
 	$(MAKE) >> ${LOG_FILE} 2>&1 && $(MAKE) install;
 
 sdl:
 	cd $(SDL_DIR); \
 	echo -n "$(CURRENT_TIME) building $@ ... " >> $(LOG_FILE); \
-	./configure --prefix=$(C_USR_DIR) --enable-shared; \
+	./configure --prefix=$(C_USR_DIR) --disable-shared; \
 	$(MAKE) && $(MAKE) install;
 
 ffmpeg:
 	cd $(FFMPEG_DIR); \
 	echo -n "$(CURRENT_TIME) building $@ ... " >> $(LOG_FILE); \
 	sed -i -e 's|SDL_CONFIG="$${cross_prefix}sdl-config"|SDL_CONFIG="$(C_USR_DIR)/bin/sdl-config"|' ./configure; \
-	./configure --prefix=$(C_USR_DIR) --enable-shared --enable-libfaac --enable-libmp3lame --enable-libx264 --enable-gpl --enable-pthreads --enable-nonfree >> ${LOG_FILE} 2>&1; \
+	./configure --prefix=$(C_USR_DIR) --enable-libfaac --enable-libmp3lame --enable-libx264 --enable-gpl --enable-pthreads --enable-nonfree >> ${LOG_FILE} 2>&1; \
 	sed -i -e 's|SDL_CONFIG="$(C_USR_DIR)/bin/sdl-config"|SDL_CONFIG="$${cross_prefix}sdl-config"|' ./configure; \
 	$(MAKE) >> ${LOG_FILE} 2>&1 >> ${LOG_FILE} 2>&1 && $(MAKE) install;
 
