@@ -5,6 +5,11 @@
 #wget http://downloads.sourceforge.net/faac/faac-1.28.tar.bz2
 wget http://netcologne.dl.sourceforge.net/project/faac/faac-src/faac-1.28/faac-1.28.tar.bz2
 tar xfj faac-1.28.tar.bz2
+cd faac-1.28
+wget http://www.linuxfromscratch.org/patches/blfs/svn/faac-1.28-glibc_fixes-1.patch
+patch -Np1 -i faac-1.28-glibc_fixes-1.patch
+sed -i -e '/obj-type/d' -e '/Long Term/d' frontend/main.c
+cd ..
 #wget http://sourceforge.net/projects/lame/files/lame/3.99/lame-3.99.5.tar.gz
 wget http://kent.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
 tar xfz lame-3.99.5.tar.gz

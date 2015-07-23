@@ -3,7 +3,7 @@ TARGETS := lame faac x264 sdl ffmpeg
 CDIR := $(CURDIR)
 USR  := $(CDIR)/usr
 UID  := $(shell id -u)
-LOG_FILE ?= $(CDIR)/build_$(shell date +"%Y%m%d_%H%M%S").log
+LOG_FILE := $(CDIR)/build_$(shell date +"%Y%m%d_%H%M%S").log
 
 LAME_DIR   := lame-3.99.5
 FAAC_DIR   := faac-1.28
