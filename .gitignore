@@ -17,3 +17,5 @@ usr/
 *.tar.gz
 *.tar.bz2
 *.zip
+
+Makefile

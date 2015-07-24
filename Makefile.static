@@ -51,8 +51,8 @@ x264:
 sdl:
 	cd $(SDL_DIR); \
 	echo -n "$(CURRENT_TIME) building $@ ... " >> $(LOG_FILE); \
-	./configure --prefix=$(C_USR_DIR) --disable-shared; \
-	$(MAKE) && $(MAKE) install;
+	./configure --prefix=$(C_USR_DIR) --disable-shared >> ${LOG_FILE} 2>&1; \
+	$(MAKE) >> ${LOG_FILE} 2>&1 && $(MAKE) install;
 
 ffmpeg:
 	cd $(FFMPEG_DIR); \
