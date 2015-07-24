@@ -1,8 +1,4 @@
-SDL-1.2.15/
-faac-1.28/
-ffmpeg-2.6.3/
-lame-3.99.5/
-x264/
+build/
 usr/
 
 *~
