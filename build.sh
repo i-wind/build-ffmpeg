@@ -12,8 +12,8 @@ if [ ! -e "faac-1.28.tar.bz2" ]; then
   if [ ! -d "faac-1.28" ]; then
     extract faac-1.28.tar.bz2
     # apply patch for faac
+    cp ../patches/faac-1.28-glibc_fixes-1.patch faac-1.28/
     cd faac-1.28
-    download http://www.linuxfromscratch.org/patches/blfs/svn/faac-1.28-glibc_fixes-1.patch
     patch -Np1 -i faac-1.28-glibc_fixes-1.patch
     sed -i -e '/obj-type/d' -e '/Long Term/d' frontend/main.c
     cd ..
@@ -43,6 +43,12 @@ if [ ! -e "SDL-1.2.15.tar.gz" ]; then
   download https://www.libsdl.org/release/SDL-1.2.15.tar.gz
   if [ ! -d "SDL-1.2.15" ]; then
     extract SDL-1.2.15.tar.gz
+    # apply patch for sdl
+    cp ../patches/libsdl-1.2.15-const-xdata32.patch SDL-1.2.15/
+    cd SDL-1.2.15
+    patch -Np1 -i libsdl-1.2.15-const-xdata32.patch
+    ./autogen.sh
+    cd ..
   fi
 else
   echo "SDL-1.2.15.tar.gz already exists..."
