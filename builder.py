@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 """
-@script  : build.py
+@script  : builder.py
 @about   :
 """
 import os, sys
@@ -173,4 +173,4 @@ if __name__ == '__main__':
 
 sys.exit(0)
 
-# end of build.py
+# end of builder.py
