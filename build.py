@@ -14,6 +14,15 @@ from subprocess import call
 __version__ = "0.1.0"
 
 
+def progress(count, total, suffix=''):
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix))
+    sys.stdout.flush()
+
+
 def download(url):
   print "Opening url %s" % url
   file_name = url.split('/')[-1]
@@ -29,9 +38,7 @@ def download(url):
       if not buffer: break
       file_size_dl += len(buffer)
       f.write(buffer)
-      status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-      status = status + chr(8)*(len(status)+1)
-      print status,
+      progress(file_size_dl, file_size)
   print
 
 
