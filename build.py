@@ -9,6 +9,7 @@ import urllib2
 import shutil
 import shlex
 from subprocess import call
+from optparse import OptionParser, make_option
 
 
 __version__ = "0.1.0"
@@ -104,9 +105,9 @@ def build_sdl():
   os.chdir("..")
 
 
-def build_ffmpeg():
+def build_ffmpeg(version):
   user_dir = os.path.join(os.getcwd(), 'usr')
-  os.chdir("ffmpeg-2.6.3")
+  os.chdir("ffmpeg-%s" % version)
   print os.getcwd()
   call(shlex.split("sed -i -e 's|SDL_CONFIG=\"${cross_prefix}sdl-config\"|SDL_CONFIG=\"%s/bin/sdl-config\"|' ./configure" % user_dir))
   shutil.copy2("configure", "configure.orig")
@@ -119,16 +120,36 @@ def build_ffmpeg():
   os.chdir("..")
 
 
-urls = [
-    "http://sourceforge.net/projects/lame/files/lame/3.99/lame-3.99.5.tar.gz",
-    "http://downloads.sourceforge.net/faac/faac-1.28.tar.bz2",
-    "https://www.libsdl.org/release/SDL-1.2.15.tar.gz",
-    "http://ffmpeg.org/releases/ffmpeg-2.6.3.tar.bz2"
+urls = {
+    "lame"  : "http://sourceforge.net/projects/lame/files/lame/3.99/lame-3.99.5.tar.gz",
+    "faac"  : "http://downloads.sourceforge.net/faac/faac-1.28.tar.bz2",
+    "sdl"   : "https://www.libsdl.org/release/SDL-1.2.15.tar.gz",
+    "ffmpeg": "http://ffmpeg.org/releases/ffmpeg-%s.tar.bz2"
+  }
+
+
+def parse_args():
+  # parse command line arguments
+  option_list = [
+      make_option('-f', '--ffmpeg', action='store', default='2.6.3',
+                  dest='ffmpeg', help='ffmpeg version to build (default 2.6.3)'),
   ]
+  usage = """\
+usage: %prog [options]
+
+  Build ffmpeg from source in Linux..."""
+  parser = OptionParser(option_list=option_list, usage=usage,
+                        version='  %prog version ' + __version__,
+                        epilog='Good luck...')
+  return parser.parse_args()
 
 
 if __name__ == '__main__':
-  for url in urls:
+  (options, _) = parse_args()
+  urls["ffmpeg"] = urls["ffmpeg"] % options.ffmpeg
+
+  # download components
+  for lib, url in urls.items():
     file_name = url.split('/')[-1]
     if not os.path.isfile(file_name):
       download(url)
@@ -138,15 +159,17 @@ if __name__ == '__main__':
     os.chdir("x264")
     call("git checkout stable".split())
     os.chdir("..")
+
   # apply patches
   patch_faac()
   patch_sdl()
+
   # build components
   build_lame()
   build_faac()
   build_x264()
   build_sdl()
-  build_ffmpeg()
+  build_ffmpeg(options.ffmpeg)
 
 sys.exit(0)
 
