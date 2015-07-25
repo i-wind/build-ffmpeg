@@ -1,6 +1,6 @@
 CURRENT_TIME = $(shell date +"%F %H:%M:%S")
 TARGETS := lame faac x264 sdl ffmpeg
-USR  := $(CURDIR)/../usr
+USR  := $(dir $(CURDIR))usr
 UID  := $(shell id -u)
 LOG_FILE := $(CURDIR)/build_$(shell date +"%Y%m%d_%H%M%S").log
 
@@ -24,7 +24,6 @@ endif
 
 all: build $(TARGETS)
 	echo "$(CURRENT_TIME) done building..." >> ${LOG_FILE}
-	sed -i 's|/build/../usr|/usr|g' ../usr/lib/pkgconfig/*.pc
 
 build:
 	mkdir -p ${C_USR_DIR}

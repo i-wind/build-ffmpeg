@@ -14,6 +14,6 @@ Build ffmpeg 2.6.3
 
 View logs when building
 
-    $ tail -f build*.log
+    $ tail -f `ls *.log |tail -1`
 
 Results will be in ./usr directory
