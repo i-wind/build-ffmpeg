@@ -4,6 +4,8 @@
 
 . shell/downloads.sh
 
+VERSION="0.0.1"
+
 FFMPEG_VERSION="$1"
 [ -z $FFMPEG_VERSION ] && FFMPEG_VERSION="2.6.3"
 
