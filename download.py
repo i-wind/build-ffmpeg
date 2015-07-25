@@ -40,6 +40,22 @@ def extract(name):
   call('tar %s %s' % (flag, name), shell=True)
 
 
+def patch_faac():
+  call("cp -v patches/faac-1.28-glibc_fixes-1.patch faac-1.28/", shell=True)
+  os.chdir("faac-1.28")
+  call("patch -Np1 -i faac-1.28-glibc_fixes-1.patch", shell=True)
+  call("sed -i -e '/obj-type/d' -e '/Long Term/d' frontend/main.c", shell=True)
+  os.chdir("..")
+
+
+def patch_sdl():
+  call("cp -v patches/libsdl-1.2.15-const-xdata32.patch SDL-1.2.15/", shell=True)
+  os.chdir("SDL-1.2.15")
+  call("patch -Np1 -i libsdl-1.2.15-const-xdata32.patch", shell=True)
+  call("./autogen.sh", shell=True)
+  os.chdir("..")
+
+
 urls = [
     "http://downloads.sourceforge.net/faac/faac-1.28.tar.bz2",
     "http://sourceforge.net/projects/lame/files/lame/3.99/lame-3.99.5.tar.gz",
@@ -52,8 +68,11 @@ if __name__ == '__main__':
   for url in urls:
     download(url)
     extract(url.split('/')[-1])
-  call('git clone git://git.videolan.org/x264.git', shell=True)
-  call('cd x264 && git checkout stable && cd ..', shell=True)
+  call("git clone git://git.videolan.org/x264.git", shell=True)
+  call("cd x264 && git checkout stable && cd ..", shell=True)
+  # apply patches
+  patch_faac()
+  patch_sdl()
 
 sys.exit(0)
 
