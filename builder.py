@@ -42,6 +42,9 @@ if __name__ == '__main__':
 
   if not os.path.isdir('build'):
     os.mkdir('build')
+  saved_dir = os.getcwd()
+  os.chdir("build")
+
   # download components
   for lib, url in urls.items():
     file_name = url.split('/')[-1]
@@ -60,12 +63,13 @@ if __name__ == '__main__':
   patch_sdl()
 
   # build components
-  build_lame()
-  build_faac()
-  build_x264()
-  build_sdl()
-  build_ffmpeg(options.ffmpeg)
+  user_dir = os.path.join(saved_dir, 'usr')
+  build_lame(user_dir)
+  build_faac(user_dir)
+  build_x264(user_dir)
+  build_sdl(user_dir)
+  build_ffmpeg(user_dir, options.ffmpeg)
 
-sys.exit(0)
+  sys.exit(0)
 
 # end of builder.py
