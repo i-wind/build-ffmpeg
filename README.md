@@ -6,13 +6,14 @@ Build statically ffmpeg with defined version on Linux with faac 1.28, lame 3.99.
 Build ffmpeg
 ------------
 
-For now default build version of ffmpeg is 2.6.3
+For now default build version of ffmpeg is 2.6.4
 
     $ python builder.py >build_ffmpeg.log 2>&1 &
 
 or
 
-    $ python builder.py 2.0.3 >build_ffmpeg.log 2>&1 &
+    $ python builder.py -f 2.0.3 >build_ffmpeg.log 2>&1 &
+    $ python builder.py --ffmpeg 2.7.2 >build_ffmpeg.log 2>&1 &
 
 Help
 ----
