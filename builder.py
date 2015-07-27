@@ -9,7 +9,7 @@ import shlex
 from subprocess import call
 from optparse import OptionParser, make_option
 from builder_utils import version, download, extract, patch_faac, patch_sdl, build_lame, \
-                          build_faac, build_x264, build_sdl, build_ffmpeg
+                          build_faac, build_x264, build_sdl, build_ffmpeg, logger
 
 
 urls = {
@@ -41,6 +41,7 @@ if __name__ == '__main__':
   urls["ffmpeg"] = urls["ffmpeg"] % options.ffmpeg
 
   if not os.path.isdir('build'):
+    logger.info('Create build directory')
     os.mkdir('build')
   saved_dir = os.getcwd()
   os.chdir("build")
@@ -49,17 +50,21 @@ if __name__ == '__main__':
   for lib, url in urls.items():
     file_name = url.split('/')[-1]
     if not os.path.isfile(file_name):
+      logger.info('Download ' + url)
       download(url)
       if not os.path.isdir(file_name.split('.')[0]):
         extract(file_name)
   if not os.path.isdir("x264"):
+    logger.info('Cloning x264')
     call(shlex.split("git clone git://git.videolan.org/x264.git"))
     os.chdir("x264")
     call("git checkout stable".split())
     os.chdir("..")
 
   # apply patches
+  logger.info('Patching faac')
   patch_faac()
+  logger.info('Patching sdl')
   patch_sdl()
 
   # build components

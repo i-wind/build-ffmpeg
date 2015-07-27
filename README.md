@@ -8,12 +8,12 @@ Build ffmpeg
 
 For now default build version of ffmpeg is 2.6.4
 
-    $ python builder.py >build_ffmpeg.log 2>&1 &
+    $ python builder.py &
 
 or
 
-    $ python builder.py -f 2.0.3 >build_ffmpeg.log 2>&1 &
-    $ python builder.py --ffmpeg 2.7.2 >build_ffmpeg.log 2>&1 &
+    $ python builder.py -f 2.0.3 &
+    $ python builder.py --ffmpeg 2.7.2 &
 
 Help
 ----
@@ -25,7 +25,7 @@ Logging
 
 View logs when building
 
-    $ tail -f build_ffmpeg.log
+    $ tail -f `ls *.log |tail -1`
 
 Results
 -------

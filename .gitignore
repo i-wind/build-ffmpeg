@@ -7,6 +7,7 @@ usr/
 *.la
 *.log
 *.o
+*.py[cod]
 *.so
 
 # archives
