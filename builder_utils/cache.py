@@ -43,8 +43,9 @@ class Cache:
     if not os.path.isdir(self.git_dir_):
       os.mkdir(self.git_dir_)
 
-  def download(self, url):
+  def download(self, url, dest=''):
     print "Opening url %s" % url
+    if not dest: dest = self.arc_dir_
     file_name = url.split('/')[-1]
     u = urllib2.urlopen(url)
     meta = u.info()
@@ -52,7 +53,7 @@ class Cache:
     print "Downloading: %s Bytes: %s" % (file_name, file_size)
     file_size_dl = 0
     block_sz = 8192
-    with open(file_name, 'wb') as f:
+    with open(os.path.join(dest, file_name), 'wb') as f:
       while True:
         buffer = u.read(block_sz)
         if not buffer: break
@@ -60,3 +61,8 @@ class Cache:
         f.write(buffer)
         progress(file_size_dl, file_size)
     print
+
+  def has(file_name):
+    result = False
+    if os.path.isfile( os.path.join(self.arc_dir_, file_name) ): result = True
+    return result
