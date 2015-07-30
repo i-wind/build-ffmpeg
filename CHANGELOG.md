@@ -1,5 +1,15 @@
 ## FFMPEG builder changelog
 
+### 0.1.2 (2015-07-30)
+
+Features:
+
+ - add logging to file
+
+Bugfixes:
+
+ - fix buffered stdout of subprocess Popen
+
 ### 0.1.1 (2015-07-26)
 
 Features:

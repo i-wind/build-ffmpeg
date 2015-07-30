@@ -7,7 +7,7 @@ from patch import patch_faac, patch_sdl
 from config import logger, command
 
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
 def version():
