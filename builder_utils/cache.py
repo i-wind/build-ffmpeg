@@ -4,7 +4,7 @@
 @script : cache.py
 @about  :
 """
-import os
+import os, sys
 import shlex
 import shutil
 import urllib2
@@ -28,7 +28,8 @@ class Cache:
       "lame"  : "http://sourceforge.net/projects/lame/files/lame/3.99/lame-3.99.5.tar.gz",
       "faac"  : "http://downloads.sourceforge.net/faac/faac-1.28.tar.bz2",
       "sdl"   : "https://www.libsdl.org/release/SDL-1.2.15.tar.gz",
-      "ffmpeg": "http://ffmpeg.org/releases/ffmpeg-%s.tar.bz2"
+      "ffmpeg": "http://ffmpeg.org/releases/ffmpeg-%s.tar.bz2",
+      "x264"  : "git://git.videolan.org/x264.git",
     }
 
   def __init__(self, root_dir):
@@ -62,7 +63,39 @@ class Cache:
         progress(file_size_dl, file_size)
     print
 
-  def has(file_name):
+  def clone(self, url, dest=''):
+    print "Cloning url %s" % url
+    if not dest: dest = self.git_dir_
+    call(shlex.split("git clone git://git.videolan.org/x264.git %s" % dest))
+    saved = os.getcwd()
+    os.chdir(dest)
+    call("git checkout stable".split())
+    os.chdir(saved)
+
+  def has(self, name, source='arc'):
     result = False
-    if os.path.isfile( os.path.join(self.arc_dir_, file_name) ): result = True
+    if source == 'arc':
+      if os.path.isfile( os.path.join(self.arc_dir_, name) ):
+        result = True
+    elif source == 'git':
+      if os.path.isdir( os.path.join(self.git_dir_, name) ):
+        result = True
     return result
+
+  def check(self):
+    # download components
+    for lib, url in Cache.URLS.items():
+      file_name = url.split('/')[-1]
+      name, ext = os.path.splitext(url)
+      if ext in ['.gz', '.tgz', '.bz2']:
+        source = 'arc'
+      elif ext == '.git':
+        source = 'git'
+      else:
+        raise CacheError('Wrong address %s' % url)
+      if source == 'arc':
+        if not self.has(file_name):
+          self.download(url)
+      else:
+        if not self.has(file_name, 'git'):
+          self.clone(url, os.path.join(self.git_dir_, lib))

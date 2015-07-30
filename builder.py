@@ -8,16 +8,7 @@ import os, sys
 import shlex
 from subprocess import call
 from optparse import OptionParser, make_option
-from builder_utils import version, download, extract, patch_faac, patch_sdl, build_lame, \
-                          build_faac, build_x264, build_sdl, build_ffmpeg, logger
-
-
-urls = {
-    "lame"  : "http://sourceforge.net/projects/lame/files/lame/3.99/lame-3.99.5.tar.gz",
-    "faac"  : "http://downloads.sourceforge.net/faac/faac-1.28.tar.bz2",
-    "sdl"   : "https://www.libsdl.org/release/SDL-1.2.15.tar.gz",
-    "ffmpeg": "http://ffmpeg.org/releases/ffmpeg-%s.tar.bz2"
-  }
+from builder_utils import *
 
 
 def parse_args():
@@ -38,28 +29,18 @@ usage: %prog [options]
 
 if __name__ == '__main__':
   (options, _) = parse_args()
-  urls["ffmpeg"] = urls["ffmpeg"] % options.ffmpeg
+  Cache.URLS["ffmpeg"] = Cache.URLS["ffmpeg"] % options.ffmpeg
+
+  cache = Cache('.')
+  cache.check()
+
+  sys.exit(0)
 
   if not os.path.isdir('build'):
     logger.info('Create build directory')
     os.mkdir('build')
   saved_dir = os.getcwd()
   os.chdir("build")
-
-  # download components
-  for lib, url in urls.items():
-    file_name = url.split('/')[-1]
-    if not os.path.isfile(file_name):
-      logger.info('Download ' + url)
-      download(url)
-      if not os.path.isdir(file_name.split('.')[0]):
-        extract(file_name)
-  if not os.path.isdir("x264"):
-    logger.info('Cloning x264')
-    call(shlex.split("git clone git://git.videolan.org/x264.git"))
-    os.chdir("x264")
-    call("git checkout stable".split())
-    os.chdir("..")
 
   # apply patches
   logger.info('Patching faac')
