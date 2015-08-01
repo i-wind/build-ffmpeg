@@ -29,32 +29,35 @@ usage: %prog [options]
 
 if __name__ == '__main__':
   (options, _) = parse_args()
-  Cache.URLS["ffmpeg"] = Cache.URLS["ffmpeg"] % options.ffmpeg
 
+  cur_dir = os.getcwd()
+
+  Cache.URLS["ffmpeg"] = Cache.URLS["ffmpeg"] % options.ffmpeg
   cache = Cache('.')
   cache.check()
+  cache.extract('build')
 
-  sys.exit(0)
+  user_dir = os.path.join(cur_dir, 'usr')
+  builder = Builder('build', user_dir)
 
   if not os.path.isdir('build'):
     logger.info('Create build directory')
     os.mkdir('build')
-  saved_dir = os.getcwd()
-  os.chdir("build")
 
+  os.chdir("build")
   # apply patches
   logger.info('Patching faac')
-  patch_faac()
+  builder.patch_faac()
   logger.info('Patching sdl')
-  patch_sdl()
+  builder.patch_sdl()
+  os.chdir('..')
 
   # build components
-  user_dir = os.path.join(saved_dir, 'usr')
-  build_lame(user_dir)
-  build_faac(user_dir)
-  build_x264(user_dir)
-  build_sdl(user_dir)
-  build_ffmpeg(user_dir, options.ffmpeg)
+  builder.build_lame()
+  builder.build_faac()
+  builder.build_x264()
+  builder.build_sdl()
+  builder.build_ffmpeg(options.ffmpeg)
 
   sys.exit(0)
 

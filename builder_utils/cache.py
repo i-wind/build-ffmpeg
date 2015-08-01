@@ -99,3 +99,21 @@ class Cache:
       else:
         if not self.has(file_name, 'git'):
           self.clone(url, os.path.join(self.git_dir_, lib))
+
+  def extract(self, dest):
+    if not os.path.isdir(dest):
+      os.makedirs(dest)
+    for lib, url in Cache.URLS.items():
+      file_name = url.split('/')[-1]
+      name, ext = os.path.splitext(url)
+      if ext in ['.gz', '.tgz', '.bz2']:
+        full_name = os.path.join(self.arc_dir_, file_name)
+        if ext == '.bz2':
+          cmd = 'tar xfj %s -C %s' % (full_name, dest)
+        else:
+          cmd = 'tar xfz %s -C %s' % (full_name, dest)
+        print cmd
+        call(shlex.split(cmd))
+      else:
+        full_name = os.path.join(self.git_dir_, file_name.split('.')[0])
+        shutil.copytree(full_name, os.path.join(dest, file_name.split('.')[0]))

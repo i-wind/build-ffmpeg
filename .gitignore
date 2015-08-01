@@ -17,3 +17,5 @@ usr/
 *.zip
 
 Makefile
+.ctags
+tags
