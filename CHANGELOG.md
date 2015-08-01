@@ -1,5 +1,11 @@
 ## FFMPEG builder changelog
 
+### 0.1.3 (2015-08-01)
+
+Features:
+
+ - split components building into Cache and Builder classes
+
 ### 0.1.2 (2015-07-30)
 
 Features:
