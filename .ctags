@@ -1,0 +1,9 @@
+# ctags -R .
+# find . -name '*.py' | xargs ctags
+# find /usr/lib/python2.7 -name '*.py' | xargs ctags --append
+
+--languages=python
+--python-kinds=-iv
+--exclude=.git
+--exclude=misc
+--exclude=cache
