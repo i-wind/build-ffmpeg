@@ -16,6 +16,7 @@ def parse_args():
   option_list = [
       make_option('-f', '--ffmpeg', action='store', default='2.6.4',
                   dest='ffmpeg', help='ffmpeg version to build (default 2.6.4)'),
+      make_option('-p', '--prefix', action='store', default='./usr', dest='prefix', help='Installation directory prefix'), 
   ]
   usage = """\
 usage: %prog [options]
@@ -37,7 +38,7 @@ if __name__ == '__main__':
   cache.check()
   cache.extract('build')
 
-  user_dir = os.path.join(cur_dir, 'usr')
+  user_dir = os.path.join(cur_dir, options.prefix)
   builder = Builder('build', user_dir)
 
   if not os.path.isdir('build'):
