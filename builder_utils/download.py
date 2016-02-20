@@ -4,6 +4,7 @@
 @script : download.py
 @about  :
 """
+from __future__ import print_function
 import sys
 import urllib2
 from subprocess import call
@@ -19,29 +20,29 @@ def progress(count, total, suffix=''):
 
 
 def download(url):
-  print "Opening url %s" % url
-  file_name = url.split('/')[-1]
-  u = urllib2.urlopen(url)
-  meta = u.info()
-  file_size = int(meta.getheaders("Content-Length")[0])
-  print "Downloading: %s Bytes: %s" % (file_name, file_size)
-  file_size_dl = 0
-  block_sz = 8192
-  with open(file_name, 'wb') as f:
-    while True:
-      buffer = u.read(block_sz)
-      if not buffer: break
-      file_size_dl += len(buffer)
-      f.write(buffer)
-      progress(file_size_dl, file_size)
-  print
+    print("Opening url %s" % url)
+    file_name = url.split('/')[-1]
+    u = urllib2.urlopen(url)
+    meta = u.info()
+    file_size = int(meta.getheaders("Content-Length")[0])
+    print("Downloading: %s Bytes: %s" % (file_name, file_size))
+    file_size_dl = 0
+    block_sz = 8192
+    with open(file_name, 'wb') as f:
+        while True:
+            buffer = u.read(block_sz)
+            if not buffer: break
+            file_size_dl += len(buffer)
+            f.write(buffer)
+            progress(file_size_dl, file_size)
+    print
 
 
 def extract(name):
-  if name.endswith('.tar.gz'):
-    flag = 'xfz'
-  elif name.endswith('.tar.bz2'):
-    flag = 'xfj'
-  else:
-    raise Exception('Wrong archive name %s' % name)
-  call(['tar', flag, name])
+    if name.endswith('.tar.gz'):
+        flag = 'xfz'
+    elif name.endswith('.tar.bz2'):
+        flag = 'xfj'
+    else:
+        raise Exception('Wrong archive name %s' % name)
+    call(['tar', flag, name])

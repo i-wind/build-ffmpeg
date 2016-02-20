@@ -11,5 +11,4 @@ __version__ = "0.1.3"
 
 
 def version():
-  return __version__
-
+    return __version__
