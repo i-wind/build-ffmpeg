@@ -6,6 +6,8 @@
 """
 import os
 import sys
+import logging
+from time import time
 from optparse import OptionParser, make_option
 from builder_utils import *
 
@@ -17,6 +19,8 @@ def parse_args():
                     dest='ffmpeg', help='ffmpeg version to build (default 2.6.4)'),
         make_option('-p', '--prefix', action='store', default='/usr/local',
                     dest='prefix', help='Installation directory prefix'),
+        make_option('-l', '--log', action='store_true', default=False,
+                    help='Use logging to file'),
     ]
     usage = """\
   usage: %prog [options]
@@ -32,6 +36,12 @@ if __name__ == '__main__':
     (options, _) = parse_args()
 
     cur_dir = os.path.abspath(os.path.dirname(__file__))
+
+    if options.log:
+        logging.basicConfig(filename='ffmpeg_builder_%d.log' % int(time()),
+                            level=logging.DEBUG, format='[%(asctime)s] %(message)s')
+    else:
+        logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] %(message)s')
 
     Cache.URLS['ffmpeg'] = Cache.URLS['ffmpeg'] % options.ffmpeg
     cache = Cache('.')

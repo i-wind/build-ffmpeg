@@ -6,13 +6,9 @@
 """
 import shlex
 import logging
-from time import time
 import contextlib
 from subprocess import Popen, PIPE, STDOUT
 
-
-logging.basicConfig(filename='ffmpeg_builder_%d.log' % int(time()),
-                    level=logging.DEBUG, format='[%(asctime)s] %(message)s')
 logger = logging.getLogger('FFMPEG.builder')
 
 # Unix, Windows and old Macintosh end-of-line
