@@ -13,7 +13,7 @@ For now default build version of ffmpeg is 2.6.4
 or
 
     $ python builder.py -f 2.0.3 &
-    $ python builder.py --ffmpeg 2.7.2 &
+    $ python builder.py --ffmpeg 2.7.2 --prefix usr &
 
 Help
 ----

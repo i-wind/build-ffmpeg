@@ -7,7 +7,7 @@ from config import logger, command
 from cache import Cache, CacheError
 
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 
 def version():
