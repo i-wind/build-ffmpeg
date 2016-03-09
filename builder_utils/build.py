@@ -58,7 +58,8 @@ class Builder:
         shutil.copy2("configure", "configure.orig")
         cmd = ("./configure --prefix=%s --extra-cflags=\"-I%s/include\" "
                "--extra-ldflags=\"-L%s/lib\" --enable-libfaac --enable-libmp3lame "
-               "--enable-libx264 --enable-gpl --enable-pthreads --enable-nonfree" % (
+               "--enable-libx264 --enable-libzvbi --enable-libass --enable-gpl "
+               "--enable-pthreads --enable-nonfree" % (
                   self.install_dir_, self.install_dir_, self.install_dir_))
         command(cmd)
         shutil.move("configure.orig", "configure")
