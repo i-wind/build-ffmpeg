@@ -70,6 +70,7 @@ if __name__ == '__main__':
     # build components
     builder.build_lame()
     builder.build_faac()
+    builder.build_ass()
     builder.build_x264()
     builder.build_sdl()
     builder.build_ffmpeg(options.ffmpeg)

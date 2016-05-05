@@ -32,6 +32,7 @@ class Cache:
         "sdl"   : "https://www.libsdl.org/release/SDL-1.2.15.tar.gz",
         "ffmpeg": "http://ffmpeg.org/releases/ffmpeg-%s.tar.bz2",
         "x264"  : "git://git.videolan.org/x264.git",
+        "libass": "https://github.com/libass/libass.git",
       }
 
     def __init__(self, root_dir):
@@ -65,14 +66,17 @@ class Cache:
                 progress(file_size_dl, file_size)
         print()
 
-    def clone(self, url, dest=''):
+    def clone(self, url, branch='', dest=''):
         print("Cloning url %s" % url)
         if not dest: dest = self.git_dir_
-        call(shlex.split("git clone git://git.videolan.org/x264.git %s" % dest))
+        cmd = "git clone %s %s" % (url, dest)
+        print(cmd)
+        call(shlex.split(cmd))
         saved = os.getcwd()
-        os.chdir(dest)
-        call("git checkout stable".split())
-        os.chdir(saved)
+        if branch:
+            os.chdir(dest)
+            call(("git checkout %s" % branch).split())
+            os.chdir(saved)
 
     def has(self, name, source='arc'):
         result = False
@@ -99,8 +103,12 @@ class Cache:
                 if not self.has(file_name):
                     self.download(url)
             else:
+                # Ubuntu 12.04:
+                #   You could always build with the most recent libass commit that still
+                #   supports your fontconfig (9a2b38e8f5957418362e86b525f72794565deedd).
                 if not self.has(file_name, 'git'):
-                    self.clone(url, os.path.join(self.git_dir_, lib))
+                    branch = 'stable' if file_name == 'x264' else '9a2b38e8f5957418362e86b525f72794565deedd'
+                    self.clone(url, branch, os.path.join(self.git_dir_, lib))
 
     def extract(self, dest):
         if not os.path.isdir(dest):
