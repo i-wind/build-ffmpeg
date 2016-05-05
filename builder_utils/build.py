@@ -7,6 +7,7 @@
 from __future__ import print_function
 import os
 import shutil
+import multiprocessing
 
 from config import command
 
@@ -15,12 +16,13 @@ class Builder:
     def __init__(self, build_dir, install_dir):
         self.build_dir_ = build_dir
         self.install_dir_ = install_dir
+        self.cpu_count_ = 4 if multiprocessing.cpu_count() > 4 else multiprocessing.cpu_count()
 
     def build_lame(self):
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "lame-3.99.5"))
         command("./configure --prefix=%s --disable-shared --enable-static" % self.install_dir_)
-        command(["make"])
+        command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
         os.chdir(saved)
 
@@ -28,7 +30,7 @@ class Builder:
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "faac-1.28"))
         command("./configure --prefix=%s --disable-shared --enable-static" % self.install_dir_)
-        command(["make"])
+        command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
         os.chdir(saved)
 
@@ -37,7 +39,7 @@ class Builder:
         os.chdir(os.path.join(self.build_dir_, "libass"))
         command(["./autogen.sh"])
         command("./configure --prefix=%s --enable-shared=no --enable-static" % self.install_dir_)
-        command(["make"])
+        command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
         os.chdir(saved)
 
@@ -48,7 +50,7 @@ class Builder:
             "./configure --prefix=%s --extra-cflags=\"-I%s/include\" --extra-ldflags=\"-L%s/lib\""
             " --enable-static --disable-lavf --disable-ffms --disable-opencl" % (
                 self.install_dir_, self.install_dir_, self.install_dir_))
-        command(["make"])
+        command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
         os.chdir(saved)
 
@@ -56,7 +58,7 @@ class Builder:
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "SDL-1.2.15"))
         command("./configure --prefix=%s --disable-shared" % self.install_dir_)
-        command(["make"])
+        command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
         os.chdir(saved)
 
@@ -76,7 +78,7 @@ class Builder:
         print(cmd)
         command(cmd)
         shutil.move("configure.orig", "configure")
-        command(["make"])
+        command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
         os.chdir(saved)
 
