@@ -65,6 +65,8 @@ if __name__ == '__main__':
     builder.patch_faac()
     logger.info('Patching sdl')
     builder.patch_sdl()
+    logger.info('Patching ffmpeg')
+    builder.patch_ffmpeg(options.ffmpeg)
     os.chdir('..')
 
     # build components
