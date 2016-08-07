@@ -104,11 +104,13 @@ class Builder:
         os.chdir("..")
 
     def patch_ffmpeg(self, version):
-        # command("cp -v ../patches/0000-patch6.patch ffmpeg-%s/" % version)
-        command("cp -v ../patches/0001-Applied-indian-commit.patch ffmpeg-%s/" % version)
-        command("cp -v ../patches/0002-Using-AVBufferRef-instead-of-AVBuffer.patch ffmpeg-%s/" % version)
-        os.chdir("ffmpeg-%s" % version)
-        # command("patch -Np1 -i 0000-patch6.patch")
-        command("patch -Np1 -i 0001-Applied-indian-commit.patch")
-        command("patch -Np1 -i 0002-Using-AVBufferRef-instead-of-AVBuffer.patch")
-        os.chdir("..")
+        # apply patches only to ffmpeg 2.6.4
+        if version == '2.6.4':
+            # command("cp -v ../patches/0000-patch6.patch ffmpeg-%s/" % version)
+            command("cp -v ../patches/0001-Applied-indian-commit.patch ffmpeg-%s/" % version)
+            command("cp -v ../patches/0002-Using-AVBufferRef-instead-of-AVBuffer.patch ffmpeg-%s/" % version)
+            os.chdir("ffmpeg-%s" % version)
+            # command("patch -Np1 -i 0000-patch6.patch")
+            command("patch -Np1 -i 0001-Applied-indian-commit.patch")
+            command("patch -Np1 -i 0002-Using-AVBufferRef-instead-of-AVBuffer.patch")
+            os.chdir("..")
