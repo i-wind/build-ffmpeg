@@ -6,6 +6,7 @@
 """
 from __future__ import print_function
 import os
+import logging
 import shutil
 import multiprocessing
 
@@ -75,9 +76,8 @@ class Builder:
                "--extra-ldflags=\"-L%s/lib\" --enable-libfaac --enable-libmp3lame "
                "--enable-libx264 --enable-libzvbi --enable-libass --enable-gpl "
                "--enable-pthreads --enable-nonfree" % (
-                  self.install_dir_, self.install_dir_, self.install_dir_))
-        logger.info(cmd)
-        command(cmd)
+                   self.install_dir_, self.install_dir_, self.install_dir_))
+        logging.info(cmd)
         shutil.move("configure.orig", "configure")
         command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
