@@ -63,7 +63,7 @@ class Builder:
         command(["make", "install"])
         os.chdir(saved)
 
-    def build_ffmpeg(self, version):
+    def build_ffmpeg(self, version, enable=[], disable=[]):
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "ffmpeg-%s" % version))
         command(
@@ -74,8 +74,14 @@ class Builder:
         cmd = ("./configure --prefix=%s --extra-cflags=\"-I%s/include\" "
                "--extra-ldflags=\"-L%s/lib\" --enable-libfaac --enable-libmp3lame "
                "--enable-libx264 --enable-libzvbi --enable-libass --enable-gpl "
-               "--enable-pthreads --enable-nonfree --disable-vaapi" % (
+               "--enable-pthreads --enable-nonfree" % (
                    self.install_dir_, self.install_dir_, self.install_dir_))
+        if enable:
+            for opt in enable:
+                cmd += ' --enable-' + opt
+        if disable:
+            for opt in disable:
+                cmd += ' --disable-' + opt
         logging.info(cmd)
         command(cmd)
         shutil.move("configure.orig", "configure")
