@@ -3,6 +3,8 @@
 """
 @script : builder.py
 @about  :
+@example:
+  $ python builder.py --ffmpeg 3.1.3 --disable vaapi --prefix usr --log &
 """
 import os
 import sys
@@ -21,6 +23,10 @@ def parse_args():
                     dest='prefix', help='Installation directory prefix'),
         make_option('-l', '--log', action='store_true', default=False,
                     help='Use logging to file'),
+        make_option('-e', '--enable', action='store', dest='enable',
+                    help='Enable ffmpeg components (separated by comma)'),
+        make_option('-d', '--disable', action='store', dest='disable',
+                    help='Disable ffmpeg components (separated by comma)'),
     ]
     usage = """\
   usage: %prog [options]
@@ -75,7 +81,17 @@ if __name__ == '__main__':
     builder.build_ass()
     builder.build_x264()
     builder.build_sdl()
-    builder.build_ffmpeg(options.ffmpeg)
+
+    enable = []
+    if options.enable:
+        for opt in options.enable.split(','):
+            enable.append(opt.strip())
+    disable = []
+    if options.disable:
+        for opt in options.disable.split(','):
+            disable.append(opt.strip())
+
+    builder.build_ffmpeg(options.ffmpeg, enable, disable)
     logger.info('Done building ffmpeg ' + options.ffmpeg)
 
     sys.exit(0)
