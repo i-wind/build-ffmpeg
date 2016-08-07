@@ -33,7 +33,7 @@ class Cache:
         "ffmpeg": "http://ffmpeg.org/releases/ffmpeg-%s.tar.bz2",
         "x264"  : "git://git.videolan.org/x264.git",
         "libass": "https://github.com/libass/libass.git",
-      }
+    }
 
     def __init__(self, root_dir):
         self.root_dir_ = os.path.abspath(root_dir)  # os.getcwd()
@@ -107,7 +107,8 @@ class Cache:
                 #   You could always build with the most recent libass commit that still
                 #   supports your fontconfig (9a2b38e8f5957418362e86b525f72794565deedd).
                 if not self.has(file_name, 'git'):
-                    branch = 'stable' if file_name == 'x264' else '9a2b38e8f5957418362e86b525f72794565deedd'
+                    branch = 'stable' if file_name == 'x264' else \
+                        '9a2b38e8f5957418362e86b525f72794565deedd'
                     self.clone(url, branch, os.path.join(self.git_dir_, lib))
 
     def extract(self, dest):
@@ -125,5 +126,7 @@ class Cache:
                 print(cmd)
                 call(shlex.split(cmd))
             else:
-                full_name = os.path.join(self.git_dir_, file_name.split('.')[0])
-                shutil.copytree(full_name, os.path.join(dest, file_name.split('.')[0]))
+                fname = file_name.split('.')[0]
+                full_name = os.path.join(self.git_dir_, fname)
+                if not os.path.isdir(os.path.join(dest, fname)):
+                    shutil.copytree(full_name, os.path.join(dest, fname))
