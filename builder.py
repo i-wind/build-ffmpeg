@@ -74,6 +74,7 @@ if __name__ == '__main__':
     builder.build_x264()
     builder.build_sdl()
     builder.build_ffmpeg(options.ffmpeg)
+    logger.info('Done building ffmpeg ' + options.ffmpeg)
 
     sys.exit(0)
 
