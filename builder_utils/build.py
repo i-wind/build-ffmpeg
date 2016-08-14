@@ -10,7 +10,7 @@ import logging
 import shutil
 import multiprocessing
 
-from config import command
+from config import logger, command
 
 
 class Builder:
@@ -18,6 +18,7 @@ class Builder:
         self.build_dir_ = build_dir
         self.install_dir_ = install_dir
         self.cpu_count_ = 4 if multiprocessing.cpu_count() > 4 else multiprocessing.cpu_count()
+        logger.info("Using %d CPU(S) for building ffmpeg", self.cpu_count_)
 
     def build_lame(self):
         saved = os.getcwd()
@@ -83,7 +84,6 @@ class Builder:
             for opt in disable:
                 cmd += ' --disable-' + opt
         logging.info(cmd)
-        command(cmd)
         shutil.move("configure.orig", "configure")
         command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
@@ -102,3 +102,15 @@ class Builder:
         command("patch -Np1 -i libsdl-1.2.15-const-xdata32.patch")
         command("./autogen.sh")
         os.chdir("..")
+
+    def patch_ffmpeg(self, version):
+        # apply patches only to ffmpeg 2.6.4
+        if version == '2.6.4':
+            # command("cp -v ../patches/0000-patch6.patch ffmpeg-%s/" % version)
+            command("cp -v ../patches/0001-Applied-indian-commit.patch ffmpeg-%s/" % version)
+            command("cp -v ../patches/0002-Using-AVBufferRef-instead-of-AVBuffer.patch ffmpeg-%s/" % version)
+            os.chdir("ffmpeg-%s" % version)
+            # command("patch -Np1 -i 0000-patch6.patch")
+            command("patch -Np1 -i 0001-Applied-indian-commit.patch")
+            command("patch -Np1 -i 0002-Using-AVBufferRef-instead-of-AVBuffer.patch")
+            os.chdir("..")
