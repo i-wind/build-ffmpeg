@@ -7,8 +7,8 @@ from config import logger, command
 from cache import Cache, CacheError
 
 
-__version__ = "0.1.4"
+__version__ = (0, 1, 5)
 
 
 def version():
-    return __version__
+    return '.'.join(map(str, __version__))
