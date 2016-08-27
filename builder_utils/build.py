@@ -6,7 +6,6 @@
 """
 from __future__ import print_function
 import os
-import logging
 import shutil
 import multiprocessing
 
@@ -21,6 +20,7 @@ class Builder:
         logger.info("Using %d CPU(S) for building ffmpeg", self.cpu_count_)
 
     def build_lame(self):
+        """build mp3lame library"""
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "lame-3.99.5"))
         command("./configure --prefix=%s --disable-shared --enable-static" % self.install_dir_)
@@ -29,6 +29,7 @@ class Builder:
         os.chdir(saved)
 
     def build_faac(self):
+        """build faac library"""
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "faac-1.28"))
         command("./configure --prefix=%s --disable-shared --enable-static" % self.install_dir_)
@@ -37,6 +38,7 @@ class Builder:
         os.chdir(saved)
 
     def build_ass(self):
+        """build ass library"""
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "libass"))
         command(["./autogen.sh"])
@@ -46,6 +48,7 @@ class Builder:
         os.chdir(saved)
 
     def build_x264(self):
+        """build x264 library"""
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "x264"))
         command(
@@ -57,6 +60,7 @@ class Builder:
         os.chdir(saved)
 
     def build_sdl(self):
+        """build sdl libraries"""
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "SDL-1.2.15"))
         command("./configure --prefix=%s --disable-shared" % self.install_dir_)
@@ -65,6 +69,7 @@ class Builder:
         os.chdir(saved)
 
     def build_ffmpeg(self, version, enable=[], disable=[]):
+        """build ffmpeg libraries"""
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "ffmpeg-%s" % version))
         command(
@@ -83,7 +88,8 @@ class Builder:
         if disable:
             for opt in disable:
                 cmd += ' --disable-' + opt
-        logging.info(cmd)
+        logger.info(cmd)
+        command(cmd)
         shutil.move("configure.orig", "configure")
         command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
