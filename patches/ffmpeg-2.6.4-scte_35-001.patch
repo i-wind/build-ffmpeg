@@ -1,0 +1,31 @@
+diff --git libavcodec/avcodec.h libavcodec/avcodec.h
+index 575dae1..16390d5 100644
+--- libavcodec/avcodec.h
++++ libavcodec/avcodec.h
+@@ -527,6 +527,9 @@ enum AVCodecID {
+     /* other specific kind of codecs (generally used for attachments) */
+     AV_CODEC_ID_FIRST_UNKNOWN = 0x18000,           ///< A dummy ID pointing at the start of various fake codecs.
+     AV_CODEC_ID_TTF = 0x18000,
++
++    AV_CODEC_ID_SCTE_35,  /**< Contain no valid time stamp in DTS PTS of avpacket, avpacket data contain time stamp
++                               in scte-35 format which is relative to DTS/PTS of video stream */
+     AV_CODEC_ID_BINTEXT    = MKBETAG('B','T','X','T'),
+     AV_CODEC_ID_XBIN       = MKBETAG('X','B','I','N'),
+     AV_CODEC_ID_IDF        = MKBETAG( 0 ,'I','D','F'),
+diff --git libavcodec/codec_desc.c libavcodec/codec_desc.c
+index 32dc1fc..ae1b66c 100644
+--- libavcodec/codec_desc.c
++++ libavcodec/codec_desc.c
+@@ -2753,6 +2753,12 @@ static const AVCodecDescriptor codec_descriptors[] = {
+         .long_name = NULL_IF_CONFIG_SMALL("binary data"),
+         .mime_types= MT("application/octet-stream"),
+     },
++    {
++        .id        = AV_CODEC_ID_SCTE_35,
++        .type      = AVMEDIA_TYPE_DATA,
++        .name      = "scte_35",
++        .long_name = NULL_IF_CONFIG_SMALL("SCTE 35 Message Queue"),
++    },
+ 
+     /* deprecated codec ids */
+     {
