@@ -16,6 +16,7 @@ or
 
     $ python builder.py -f 2.0.3 &
     $ python builder.py --ffmpeg 2.7.2 --prefix usr --log &
+    $ python builder.py --ffmpeg 2.6.4 --enable openssl --prefix usr --log &
 
 Help
 ----

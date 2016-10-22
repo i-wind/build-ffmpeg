@@ -5,6 +5,7 @@
 @about  :
 @example:
   $ python builder.py --ffmpeg 3.1.3 --disable vaapi --prefix usr --log &
+  $ python builder.py --ffmpeg 2.6.4 --enable openssl --prefix usr --log &
 """
 import os
 import sys
