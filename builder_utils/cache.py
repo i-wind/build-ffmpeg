@@ -17,6 +17,7 @@ class CacheError(Exception): pass
 
 
 def progress(count, total, suffix=''):
+    """progress function"""
     bar_len = 60
     filled_len = int(round(bar_len * count / float(total)))
     percents = round(100.0 * count / float(total), 1)
@@ -25,14 +26,16 @@ def progress(count, total, suffix=''):
     sys.stdout.flush()
 
 
-class Cache:
+class Cache(object):
+    """Cache class"""
     URLS = {
-        "lame"  : "http://sourceforge.net/projects/lame/files/lame/3.99/lame-3.99.5.tar.gz",
-        "faac"  : "http://downloads.sourceforge.net/faac/faac-1.28.tar.bz2",
-        "sdl"   : "https://www.libsdl.org/release/SDL-1.2.15.tar.gz",
-        "ffmpeg": "http://ffmpeg.org/releases/ffmpeg-%s.tar.bz2",
-        "x264"  : "git://git.videolan.org/x264.git",
-        "libass": "https://github.com/libass/libass.git",
+        "lame"   : "http://sourceforge.net/projects/lame/files/lame/3.99/lame-3.99.5.tar.gz",
+        "faac"   : "http://downloads.sourceforge.net/faac/faac-1.28.tar.bz2",
+        "fdk-aac": "https://github.com/mstorsjo/fdk-aac/tarball/master",
+        "sdl"    : "https://www.libsdl.org/release/SDL-1.2.15.tar.gz",
+        "ffmpeg" : "http://ffmpeg.org/releases/ffmpeg-%s.tar.bz2",
+        "x264"   : "git://git.videolan.org/x264.git",
+        "libass" : "https://github.com/libass/libass.git",
     }
 
     def __init__(self, root_dir):
@@ -42,15 +45,19 @@ class Cache:
         self.check_dirs()
 
     def check_dirs(self):
+        """check directories"""
         if not os.path.isdir(self.arc_dir_):
             os.makedirs(self.arc_dir_)
         if not os.path.isdir(self.git_dir_):
             os.mkdir(self.git_dir_)
 
     def download(self, url, dest=''):
+        """download archives"""
         print("Opening url %s" % url)
         if not dest: dest = self.arc_dir_
         file_name = url.split('/')[-1]
+        if file_name == 'master':
+            file_name = 'fdk-aac.tar.gz'
         u = urllib2.urlopen(url)
         meta = u.info()
         file_size = int(meta.getheaders("Content-Length")[0])
@@ -67,6 +74,7 @@ class Cache:
         print()
 
     def clone(self, url, branch='', dest=''):
+        """clone repositories"""
         print("Cloning url %s" % url)
         if not dest: dest = self.git_dir_
         cmd = "git clone %s %s" % (url, dest)
@@ -79,6 +87,7 @@ class Cache:
             os.chdir(saved)
 
     def has(self, name, source='arc'):
+        """check existence"""
         result = False
         if source == 'arc':
             if os.path.isfile(os.path.join(self.arc_dir_, name)):
@@ -89,11 +98,13 @@ class Cache:
         return result
 
     def check(self):
-        # download components
+        """check components"""
         for lib, url in Cache.URLS.items():
             file_name = url.split('/')[-1]
-            name, ext = os.path.splitext(url)
-            if ext in ['.gz', '.tgz', '.bz2']:
+            if file_name == 'master':
+                file_name = 'fdk-aac.tar.gz'
+            _, ext = os.path.splitext(url)
+            if ext in ['.gz', '.tgz', '.bz2'] or lib == 'fdk-aac':
                 source = 'arc'
             elif ext == '.git':
                 source = 'git'
@@ -112,11 +123,15 @@ class Cache:
                     self.clone(url, branch, os.path.join(self.git_dir_, lib))
 
     def extract(self, dest):
+        """extract items"""
         if not os.path.isdir(dest):
             os.makedirs(dest)
-        for lib, url in Cache.URLS.items():
+        for _, url in Cache.URLS.items():
             file_name = url.split('/')[-1]
-            name, ext = os.path.splitext(url)
+            _, ext = os.path.splitext(url)
+            if file_name == 'master':
+                file_name = 'fdk-aac.tar.gz'
+                ext = '.gz'
             if ext in ['.gz', '.tgz', '.bz2']:
                 full_name = os.path.join(self.arc_dir_, file_name)
                 if ext == '.bz2':
@@ -130,3 +145,8 @@ class Cache:
                 full_name = os.path.join(self.git_dir_, fname)
                 if not os.path.isdir(os.path.join(dest, fname)):
                     shutil.copytree(full_name, os.path.join(dest, fname))
+        for dname in os.listdir(dest):
+            if 'fdk-aac' in dname: break
+        cmd = 'mv -v {} {}'.format(
+            os.path.join(dest, dname), os.path.join(dest, 'fdk-aac'))
+        call(shlex.split(cmd))

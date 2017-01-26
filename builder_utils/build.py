@@ -7,16 +7,17 @@
 from __future__ import print_function
 import os
 import shutil
-import multiprocessing
+from multiprocessing import cpu_count
 
-from config import logger, command
+from .config import logger, command
 
 
-class Builder:
+class Builder(object):
+    """Builder class"""
     def __init__(self, build_dir, install_dir):
         self.build_dir_ = build_dir
         self.install_dir_ = install_dir
-        self.cpu_count_ = 4 if multiprocessing.cpu_count() > 4 else multiprocessing.cpu_count()
+        self.cpu_count_ = 4 if cpu_count() > 4 else cpu_count()
         logger.info("Using %d CPU(S) for building ffmpeg", self.cpu_count_)
 
     def build_lame(self):
@@ -32,6 +33,16 @@ class Builder:
         """build faac library"""
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "faac-1.28"))
+        command("./configure --prefix=%s --disable-shared --enable-static" % self.install_dir_)
+        command(["make", "-j%d" % self.cpu_count_])
+        command(["make", "install"])
+        os.chdir(saved)
+
+    def build_fdk_aac(self):
+        """build fdk-faac library"""
+        saved = os.getcwd()
+        os.chdir(os.path.join(self.build_dir_, "fdk-aac"))
+        command("autoreconf -fiv")
         command("./configure --prefix=%s --disable-shared --enable-static" % self.install_dir_)
         command(["make", "-j%d" % self.cpu_count_])
         command(["make", "install"])
@@ -78,7 +89,7 @@ class Builder:
         shutil.copy2("configure", "configure.orig")
         os.environ['PKG_CONFIG_PATH'] = "%s/lib/pkgconfig" % self.install_dir_
         cmd = ("./configure --prefix=%s --extra-cflags=\"-I%s/include\" "
-               "--extra-ldflags=\"-L%s/lib\" --enable-libfaac --enable-libmp3lame "
+               "--extra-ldflags=\"-L%s/lib\" --enable-libfdk-aac --enable-libmp3lame "
                "--enable-libx264 --enable-libzvbi --enable-libass --enable-gpl "
                "--enable-pthreads --enable-nonfree" % (
                    self.install_dir_, self.install_dir_, self.install_dir_))
@@ -96,6 +107,7 @@ class Builder:
         os.chdir(saved)
 
     def patch_faac(self):
+        """patch for faac library"""
         command("cp -v ../patches/faac-1.28-glibc_fixes-1.patch faac-1.28/")
         os.chdir("faac-1.28")
         command("patch -Np1 -i faac-1.28-glibc_fixes-1.patch")
@@ -103,6 +115,7 @@ class Builder:
         os.chdir("..")
 
     def patch_sdl(self):
+        """patch for sdl library"""
         command("cp -v ../patches/libsdl-1.2.15-const-xdata32.patch SDL-1.2.15/")
         os.chdir("SDL-1.2.15")
         command("patch -Np1 -i libsdl-1.2.15-const-xdata32.patch")
@@ -110,7 +123,7 @@ class Builder:
         os.chdir("..")
 
     def patch_ffmpeg(self, version):
-        # apply patches only to ffmpeg 2.6.4
+        """apply patches only to ffmpeg 2.6.4"""
         if version == '2.6.4':
             # command("cp -v ../patches/0000-patch6.patch ffmpeg-%s/" % version)
             command("cp -v ../patches/ffmpeg-2.6.4-scte_35-001.patch ffmpeg-%s/" % version)

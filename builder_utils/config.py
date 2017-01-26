@@ -40,7 +40,7 @@ def command(cmd):
     proc = Popen(cmd, stdout=PIPE, stderr=STDOUT,
                  # Make all end-of-lines '\n'
                  universal_newlines=True,
-                 )
+                )
     for line in unbuffered(proc):
         logger.info(line.rstrip())
         # logger.handlers[0].flush()

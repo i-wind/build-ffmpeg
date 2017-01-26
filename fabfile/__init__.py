@@ -8,19 +8,9 @@ from fabric.api import task, local
 
 
 @task
-def pack():
-    """pack git repository"""
-    local('git gc')
-    local('git fsck --full --unreachable')
-    local('git prune')
-
-
-@task
-def squeeze():
-    """compress git repository"""
-    local('git fsck --unreachable --no-reflogs')
-    local('git reflog expire --expire=now --all')
-    local('git gc --aggressive --prune=now')
+def lint(arg):
+    """Use pylint to check code"""
+    local('pylint --rcfile=.pylintrc ' + arg)
 
 
 @task

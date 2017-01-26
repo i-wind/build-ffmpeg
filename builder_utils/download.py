@@ -20,6 +20,7 @@ def progress(count, total, suffix=''):
 
 
 def download(url):
+    """download items"""
     print("Opening url %s" % url)
     file_name = url.split('/')[-1]
     u = urllib2.urlopen(url)
@@ -39,6 +40,7 @@ def download(url):
 
 
 def extract(name):
+    """extract archive"""
     if name.endswith('.tar.gz'):
         flag = 'xfz'
     elif name.endswith('.tar.bz2'):

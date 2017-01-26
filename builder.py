@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
+# pylint: disable=invalid-name
 """
 @script : builder.py
 @about  :
@@ -12,11 +13,11 @@ import sys
 import logging
 from time import time
 from optparse import OptionParser, make_option
-from builder_utils import *
+from builder_utils import Builder, Cache, logger, version
 
 
 def parse_args():
-    # parse command line arguments
+    """parse command line arguments"""
     option_list = [
         make_option('-f', '--ffmpeg', action='store', default='2.6.4',
                     dest='ffmpeg', help='ffmpeg version to build (default 2.6.4)'),
@@ -53,23 +54,24 @@ if __name__ == '__main__':
     Cache.URLS['ffmpeg'] = Cache.URLS['ffmpeg'] % options.ffmpeg
     cache = Cache('.')
     cache.check()
-    cache.extract('build')
+    build_dir = 'build'
+    cache.extract(build_dir)
 
     if options.prefix.startswith('/'):
         install_dir = options.prefix
     else:
         install_dir = os.path.join(cur_dir, options.prefix)
-    build_dir = 'build'
     builder = Builder(build_dir, install_dir)
 
-    if not os.path.isdir('build'):
-        logger.info('Create build directory')
-        os.mkdir(build_dir)
+    # created in cache.extract(build_dir)
+    # if not os.path.isdir(build_dir):
+    #     logger.info('Create build directory')
+    #     os.mkdir(build_dir)
 
     os.chdir(build_dir)
     # apply patches
-    logger.info('Patching faac')
-    builder.patch_faac()
+    # logger.info('Patching faac')
+    # builder.patch_faac()
     logger.info('Patching sdl')
     builder.patch_sdl()
     logger.info('Patching ffmpeg')
@@ -78,7 +80,8 @@ if __name__ == '__main__':
 
     # build components
     builder.build_lame()
-    builder.build_faac()
+    # builder.build_faac()
+    builder.build_fdk_aac()
     builder.build_ass()
     builder.build_x264()
     builder.build_sdl()
