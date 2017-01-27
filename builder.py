@@ -51,7 +51,7 @@ if __name__ == '__main__':
     else:
         logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] %(message)s')
 
-    Cache.URLS['ffmpeg'] = Cache.URLS['ffmpeg'] % options.ffmpeg
+    Cache.URLS['ffmpeg'] = (Cache.URLS['ffmpeg'][0] % options.ffmpeg, Cache.URLS['ffmpeg'][1])
     cache = Cache('.')
     cache.check()
     build_dir = 'build'
@@ -62,11 +62,6 @@ if __name__ == '__main__':
     else:
         install_dir = os.path.join(cur_dir, options.prefix)
     builder = Builder(build_dir, install_dir)
-
-    # created in cache.extract(build_dir)
-    # if not os.path.isdir(build_dir):
-    #     logger.info('Create build directory')
-    #     os.mkdir(build_dir)
 
     os.chdir(build_dir)
     # apply patches
