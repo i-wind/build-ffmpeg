@@ -6,24 +6,16 @@
 """
 from __future__ import print_function
 import os
-import sys
 import shlex
 import shutil
 import urllib2
 from subprocess import call
 
+from .download import progress
 
+
+# pylint: disable=multiple-statements,missing-docstring
 class CacheError(Exception): pass
-
-
-def progress(count, total, suffix=''):
-    """progress function"""
-    bar_len = 60
-    filled_len = int(round(bar_len * count / float(total)))
-    percents = round(100.0 * count / float(total), 1)
-    bar = '=' * filled_len + '-' * (bar_len - filled_len)
-    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix))
-    sys.stdout.flush()
 
 
 class Cache(object):
@@ -58,18 +50,18 @@ class Cache(object):
         file_name = url.split('/')[-1]
         if file_name == 'master':
             file_name = 'fdk-aac.tar.gz'
-        u = urllib2.urlopen(url)
-        meta = u.info()
+        response = urllib2.urlopen(url)
+        meta = response.info()
         file_size = int(meta.getheaders("Content-Length")[0])
         print("Downloading: %s Bytes: %s" % (file_name, file_size))
         file_size_dl = 0
         block_sz = 8192
-        with open(os.path.join(dest, file_name), 'wb') as f:
+        with open(os.path.join(dest, file_name), 'wb') as fptr:
             while True:
-                buffer = u.read(block_sz)
+                buffer = response.read(block_sz)  # pylint: disable=redefined-builtin
                 if not buffer: break
                 file_size_dl += len(buffer)
-                f.write(buffer)
+                fptr.write(buffer)
                 progress(file_size_dl, file_size)
         print()
 
@@ -146,7 +138,11 @@ class Cache(object):
                 if not os.path.isdir(os.path.join(dest, fname)):
                     shutil.copytree(full_name, os.path.join(dest, fname))
         for dname in os.listdir(dest):
-            if 'fdk-aac' in dname: break
+            if 'fdk-aac' in dname and dname != 'fdk-aac': break
+        # pylint: disable=undefined-loop-variable
+        if not os.path.isdir(os.path.join(dest, 'fdk-aac')):
+            cmd = 'rm -rf {}'.format(os.path.join(dest, 'fdk-aac'))
+            call(shlex.split(cmd))
         cmd = 'mv -v {} {}'.format(
             os.path.join(dest, dname), os.path.join(dest, 'fdk-aac'))
         call(shlex.split(cmd))

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# pylint: disable=no-self-use
 """
-@script : build.py
-@about  :
+Build libraries
 """
 from __future__ import print_function
 import os
@@ -79,7 +79,7 @@ class Builder(object):
         command(["make", "install"])
         os.chdir(saved)
 
-    def build_ffmpeg(self, version, enable=[], disable=[]):
+    def build_ffmpeg(self, version, enable=[], disable=[]):  # pylint: disable=dangerous-default-value
         """build ffmpeg libraries"""
         saved = os.getcwd()
         os.chdir(os.path.join(self.build_dir_, "ffmpeg-%s" % version))

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# pylint: disable=invalid-name
 """
 @script : config.py
 @about  :
@@ -16,6 +17,8 @@ newlines = ['\n', '\r\n', '\r']
 
 
 def unbuffered(proc, stream='stdout'):
+    """unbuffered read"""
+    # pylint: disable=no-member
     stream = getattr(proc, stream)
     with contextlib.closing(stream):
         while True:
@@ -35,6 +38,7 @@ def unbuffered(proc, stream='stdout'):
 
 
 def command(cmd):
+    """execute command with unbuufered reading results"""
     if isinstance(cmd, basestring):
         cmd = shlex.split(cmd)
     proc = Popen(cmd, stdout=PIPE, stderr=STDOUT,
