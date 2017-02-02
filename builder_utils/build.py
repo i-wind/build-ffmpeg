@@ -123,7 +123,11 @@ class Builder(object):
         os.chdir("..")
 
     def patch_ffmpeg(self, version):
-        """apply patches only to ffmpeg 2.6.4"""
+        """apply patches only to ffmpeg 2.6.4, 3.1.6
+
+        scte_35 ffmpeg patches:
+        https://patchwork.ffmpeg.org/project/ffmpeg/list/?submitter=37&state=%2A&archive=both
+        """
         if version == '2.6.4':
             # command("cp -v ../patches/0000-patch6.patch ffmpeg-%s/" % version)
             command("cp -v ../patches/ffmpeg-2.6.4-scte_35-001.patch ffmpeg-%s/" % version)
@@ -134,4 +138,15 @@ class Builder(object):
             command("patch -Np0 -i ffmpeg-2.6.4-scte_35-001.patch")
             command("patch -Np0 -i ffmpeg-2.6.4-scte_35-002.patch")
             command("patch -Np0 -i ffmpeg-2.6.4-scte_35-003.patch")
+            os.chdir("..")
+        elif version == '3.1.6':
+            command("cp -v ../patches/ffmpeg-3.1.6-SCTE-35-1-4-V14.patch ffmpeg-3.1.6/")
+            command("cp -v ../patches/ffmpeg-3.1.6-SCTE-35-2-4-V14.patch ffmpeg-3.1.6/")
+            command("cp -v ../patches/ffmpeg-3.1.6-SCTE-35-3-4-V14.patch ffmpeg-3.1.6/")
+            command("cp -v ../patches/ffmpeg-3.1.6-SCTE-35-4-4-V14.patch ffmpeg-3.1.6/")
+            os.chdir("ffmpeg-%s" % version)
+            command("patch -Np1 -i ffmpeg-3.1.6-SCTE-35-1-4-V14.patch")
+            command("patch -Np1 -i ffmpeg-3.1.6-SCTE-35-2-4-V14.patch")
+            command("patch -Np1 -i ffmpeg-3.1.6-SCTE-35-3-4-V14.patch")
+            command("patch -Np1 -i ffmpeg-3.1.6-SCTE-35-4-4-V14.patch")
             os.chdir("..")

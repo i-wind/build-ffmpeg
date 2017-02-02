@@ -5,8 +5,12 @@
 @script : builder.py
 @about  :
 @example:
-  $ python builder.py --ffmpeg 3.1.3 --disable vaapi --prefix usr --log &
-  $ python builder.py --ffmpeg 2.6.4 --enable openssl --prefix usr --log &
+    $ python builder.py --ffmpeg 3.1.6 --disable vaapi --prefix usr --log &
+    $ python builder.py --ffmpeg 2.6.4 --enable openssl --prefix usr --log &
+
+CentOS 7
+
+    $ sudo yum install -y yasm freetype-devel fribidi-devel fontconfig-devel zvbi-devel openssl-devel
 """
 import os
 import sys
@@ -65,8 +69,8 @@ if __name__ == '__main__':
 
     os.chdir(build_dir)
     # apply patches
-    # logger.info('Patching faac')
-    # builder.patch_faac()
+    logger.info('Patching faac')
+    builder.patch_faac()
     logger.info('Patching sdl')
     builder.patch_sdl()
     logger.info('Patching ffmpeg')
@@ -75,7 +79,7 @@ if __name__ == '__main__':
 
     # build components
     builder.build_lame()
-    # builder.build_faac()
+    builder.build_faac()
     builder.build_fdk_aac()
     builder.build_ass()
     builder.build_x264()

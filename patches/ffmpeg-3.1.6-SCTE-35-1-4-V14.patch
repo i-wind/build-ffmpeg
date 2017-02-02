@@ -1,0 +1,29 @@
+diff --git a/libavcodec/avcodec.h b/libavcodec/avcodec.h
+index 39713ed..ee354a4 100644
+--- a/libavcodec/avcodec.h
++++ b/libavcodec/avcodec.h
+@@ -629,6 +629,7 @@ enum AVCodecID {
+     AV_CODEC_ID_FIRST_UNKNOWN = 0x18000,           ///< A dummy ID pointing at the start of various fake codecs.
+     AV_CODEC_ID_TTF = 0x18000,
+ 
++    AV_CODEC_ID_SCTE_35,///< Contain timestamp estimated through PCR of program stream.
+     AV_CODEC_ID_BINTEXT    = 0x18800,
+     AV_CODEC_ID_XBIN,
+     AV_CODEC_ID_IDF,
+diff --git a/libavcodec/codec_desc.c b/libavcodec/codec_desc.c
+index 9d94b72..59fd261 100644
+--- a/libavcodec/codec_desc.c
++++ b/libavcodec/codec_desc.c
+@@ -2949,6 +2949,12 @@ static const AVCodecDescriptor codec_descriptors[] = {
+         .long_name = NULL_IF_CONFIG_SMALL("binary data"),
+         .mime_types= MT("application/octet-stream"),
+     },
++    {
++        .id        = AV_CODEC_ID_SCTE_35,
++        .type      = AVMEDIA_TYPE_DATA,
++        .name      = "scte_35",
++        .long_name = NULL_IF_CONFIG_SMALL("SCTE 35 Message Queue"),
++    },
+ 
+     /* deprecated codec ids */
+ };
