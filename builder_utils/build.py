@@ -89,7 +89,7 @@ class Builder(object):
         shutil.copy2("configure", "configure.orig")
         os.environ['PKG_CONFIG_PATH'] = "%s/lib/pkgconfig" % self.install_dir_
         cmd = ("./configure --prefix=%s --extra-cflags=\"-I%s/include\" "
-               "--extra-ldflags=\"-L%s/lib\" --enable-libfdk-aac --enable-libmp3lame "
+               "--extra-ldflags=\"-L%s/lib\" --enable-libfdk-aac --enable-libmp3lame --enable-libfaac "
                "--enable-libx264 --enable-libzvbi --enable-libass --enable-gpl "
                "--enable-pthreads --enable-nonfree" % (
                    self.install_dir_, self.install_dir_, self.install_dir_))
